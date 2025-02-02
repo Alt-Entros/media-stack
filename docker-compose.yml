@@ -1,9 +1,22 @@
+version: "3.9"
+
 services:
+  vpn-client:
+    image: your-vpn-client-image  # Образ с VPN-клиентом, например, Xray
+    container_name: vpn-client
+    networks:
+      - vpn-network
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - /path/to/xray/config:/etc/xray/config.json
+    command: ["/path/to/xray", "-config=/etc/xray/config.json"]
+    restart: unless-stopped
+
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client  # Подключение через VPN
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -14,11 +27,11 @@ services:
     ports:
       - 9117:9117
     restart: unless-stopped
+
   qbittorrent:
     image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client
     environment:
       - WEBUI_PORT=8068
       - PUID=1027
@@ -27,17 +40,13 @@ services:
       - /mnt/hdd/torrents/qbittorrent/config:/config
       - /mnt/hdd/torrents/downloads:/downloads
     ports:
-      - 6881:6881
-      - 6881:6881/udp
       - 8068:8068
     restart: unless-stopped
 
-  ###############################################################
   sonarr:
     image: linuxserver/sonarr:latest
     container_name: sonarr
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -50,12 +59,10 @@ services:
       - 8989:8989
     restart: unless-stopped
 
-  ###############################################################
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -68,12 +75,10 @@ services:
       - 7878:7878
     restart: unless-stopped
 
-  ###############################################################
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
     container_name: flaresolverr
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -82,12 +87,10 @@ services:
       - 8191:8191
     restart: unless-stopped
 
-  ###############################################################
   gramarrru:
     image: memodota/gramarrru
     container_name: gramarrru
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client
     environment:
       - PUID=1027
       - PGID=100
@@ -98,31 +101,25 @@ services:
       - /mnt/hdd/torrents/gramarrru/config.json:/config
     restart: unless-stopped
 
-  ###############################################################
   jellyfin:
     image: linuxserver/jellyfin:latest
     container_name: jellyfin
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
       - PGID=100
     volumes:
       - /mnt/hdd/torrents/jellyfin/config:/config
-      - /mnt/hdd/torrents/media:/data # Используем ту же папку с медиа
+      - /mnt/hdd/torrents/media:/data
     ports:
       - 8096:8096
-      - 7359:7359/udp
-      - 8920:8920
     restart: unless-stopped
 
-  ###############################################################
   jellyseerr:
     image: fallenbagel/jellyseerr:2.2.3
     container_name: jellyseerr
-    networks:
-      - mynetwork
+    network_mode: service:vpn-client
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -132,6 +129,7 @@ services:
     ports:
       - 5055:5055
     restart: unless-stopped
+
 networks:
-  mynetwork:
+  vpn-network:
     external: true
