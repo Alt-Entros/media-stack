@@ -90,7 +90,7 @@ services:
       - sonarr
       - radarr
     volumes:
-      - /mnt/hdd/torrents/gramarrru/config.json:/config/config.json
+      - /mnt/hdd/torrents/gramarrru/config.json:/config/config
     restart: unless-stopped
 
 ###############################################################
