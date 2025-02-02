@@ -4,6 +4,8 @@ services:
   qbittorrent:
     image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
+    networks:
+      - mynetwork
     environment:
       - WEBUI_PORT=8068
       - PUID=1027
@@ -21,6 +23,8 @@ services:
   sonarr:
     image: linuxserver/sonarr:latest
     container_name: sonarr
+    networks:
+      - mynetwork
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -37,6 +41,8 @@ services:
   radarr:
     image: linuxserver/radarr:latest
     container_name: radarr
+    networks:
+      - mynetwork
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -54,6 +60,8 @@ services:
     image: flaresolverr/flaresolverr:latest
     container_name: flaresolverr
     network_mode: bridge
+    networks:
+      - mynetwork
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -66,6 +74,8 @@ services:
   gramarrru:
     image: memodota/gramarrru
     container_name: gramarrru
+    networks:
+      - mynetwork
     environment:
       - PUID=1027
       - PGID=100
@@ -80,6 +90,8 @@ services:
   jellyfin:
     image: linuxserver/jellyfin:latest
     container_name: jellyfin
+    networks:
+      - mynetwork
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -97,6 +109,8 @@ services:
   jellyseerr:
     image: fallenbagel/jellyseerr:2.2.3
     container_name: jellyseerr
+    networks:
+      - mynetwork
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -106,3 +120,6 @@ services:
     ports:
       - 5055:5055
     restart: unless-stopped
+networks:
+  mynetwork:
+    external: true
