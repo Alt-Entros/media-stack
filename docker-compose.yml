@@ -1,34 +1,6 @@
-version: '3.9'
+version: "3.9"
 
 services:
-  radarr:
-    image: linuxserver/radarr:latest
-    container_name: radarr
-    environment:
-      - PUID=1027
-      - PGID=100
-      - TZ=Europe/Moscow
-    volumes:
-      - /mnt/hdd/torrents/radarr/config:/config
-      - /mnt/hdd/torrents/download:/downloads
-    ports:
-      - 7878:7878
-    restart: unless-stopped
-
-  sonarr:
-    image: linuxserver/sonarr:latest
-    container_name: sonarr
-    environment:
-      - PUID=1027
-      - PGID=100
-      - TZ=Europe/Moscow
-    volumes:
-      - /mnt/hdd/torrents/sonarr/config:/config
-      - /mnt/hdd/torrents/download:/downloads
-    ports:
-      - 8989:8989
-    restart: unless-stopped
-
   qbittorrent:
     image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
@@ -38,9 +10,99 @@ services:
       - PGID=100
     volumes:
       - /mnt/hdd/torrents/qbittorrent/config:/config
-      - /mnt/hdd/torrents/download:/downloads
+      - /mnt/hdd/torrents/downloads:/downloads
     ports:
       - 6881:6881
       - 6881:6881/udp
       - 8068:8068
+    restart: unless-stopped
+
+  ###############################################################
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - TZ=Europe/Moscow
+      - PUID=1027
+      - PGID=100
+    volumes:
+      - /mnt/hdd/torrents/sonarr/config:/config
+      - /mnt/hdd/torrents/media/Shows:/Shows
+      - /mnt/hdd/torrents/downloads/Shows:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  ###############################################################
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - TZ=Europe/Moscow
+      - PUID=1027
+      - PGID=100
+    volumes:
+      - /mnt/hdd/torrents/radarr/config:/config
+      - /mnt/hdd/torrents/media/Movies:/Movies
+      - /mnt/hdd/torrents/downloads/Movies:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  ###############################################################
+  flaresolverr:
+    image: flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    network_mode: bridge
+    environment:
+      - TZ=Europe/Moscow
+      - PUID=1027
+      - PGID=100
+    ports:
+      - 8191:8191
+    restart: unless-stopped
+
+  ###############################################################
+  gramarrru:
+    image: memodota/gramarrru
+    container_name: gramarrru
+    environment:
+      - PUID=1027
+      - PGID=100
+    depends_on:
+      - sonarr
+      - radarr
+    volumes:
+      - /mnt/hdd/torrents/gramarrru/config.json:/config
+    restart: unless-stopped
+
+  ###############################################################
+  jellyfin:
+    image: linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - TZ=Europe/Moscow
+      - PUID=1027
+      - PGID=100
+    volumes:
+      - /mnt/hdd/torrents/jellyfin/config:/config
+      - /mnt/hdd/torrents/media:/data # Используем ту же папку с медиа
+    ports:
+      - 8096:8096
+      - 7359:7359/udp
+      - 8920:8920
+    restart: unless-stopped
+
+  ###############################################################
+  jellyseerr:
+    image: fallenbagel/jellyseerr:2.2.3
+    container_name: jellyseerr
+    environment:
+      - TZ=Europe/Moscow
+      - PUID=1027
+      - PGID=100
+    volumes:
+      - /mnt/hdd/torrents/jellyseerr/config:/app/config
+    ports:
+      - 5055:5055
     restart: unless-stopped
