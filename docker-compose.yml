@@ -2,21 +2,19 @@ version: "3.9"
 
 services:
   vpn-client:
-    image: your-vpn-client-image  # Образ с VPN-клиентом, например, Xray
+    image: teddysun/xray
     container_name: vpn-client
     networks:
       - vpn-network
-    environment:
-      - TZ=Europe/Moscow
     volumes:
-      - /path/to/xray/config:/etc/xray/config.json
-    command: ["/path/to/xray", "-config=/etc/xray/config.json"]
+      - /mnt/hdd/torrents/xray/config.json:/etc/xray/config.json
     restart: unless-stopped
+    command: ["xray", "-config=/etc/xray/config.json"]
 
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
-    network_mode: service:vpn-client  # Подключение через VPN
+    network_mode: service:vpn-client
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -114,6 +112,8 @@ services:
       - /mnt/hdd/torrents/media:/data
     ports:
       - 8096:8096
+      - 7359:7359/udp
+      - 8920:8920
     restart: unless-stopped
 
   jellyseerr:
@@ -132,4 +132,4 @@ services:
 
 networks:
   vpn-network:
-    external: true
+    driver: bridge
