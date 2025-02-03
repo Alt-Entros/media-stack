@@ -1,6 +1,6 @@
 services:
   vpn-client:
-    image: your-vpn-client-image # Образ с VPN-клиентом, например, Xray
+    image: teddysun/xray
     container_name: vpn-client
     networks:
       - vpn-network
