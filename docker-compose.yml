@@ -1,16 +1,16 @@
 services:
-vpn-client:
-  image: teddysun/xray
-  container_name: vpn-client
-  networks:
-    - vpn-network
-    - mynetwork
-  environment:
-    - TZ=Europe/Moscow
-  volumes:
-    - /mnt/hdd/torrents/xray:/etc/xray
-  command: ["xray", "-config=/etc/xray/config.json"]
-  restart: unless-stopped
+  vpn-client:
+    image: teddysun/xray
+    container_name: vpn-client
+    networks:
+      - vpn-network
+      - mynetwork
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - /mnt/hdd/torrents/xray:/etc/xray
+    command: ["xray", "-config=/etc/xray/config.json"]
+    restart: unless-stopped
 
   jackett:
     image: linuxserver/jackett:latest
