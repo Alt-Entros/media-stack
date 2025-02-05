@@ -1,25 +1,45 @@
 services:
-  # vpn-client:
-  #   image: teddysun/xray
-  #   container_name: vpn-client
-  #   environment:
-  #     - TZ=Europe/Moscow
-  #   volumes:
-  #     - /mnt/hdd/torrents/xray:/etc/xray
-  #   command: ["xray", "-config=/etc/xray/config.json"]
-  #   restart: unless-stopped
+  gluetun:
+    container_name: antizapret-vpn
+    image: qmcgaw/gluetun
+    network_mode: bridge
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun:rwm
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    environment:
+      VPN_SERVICE_PROVIDER: custom
+      VPN_TYPE: wireguard
+      WIREGUARD_PRIVATE_KEY: 6Gga9BOfuXHvWo9QpHOfPnJJ2xCR16XmrGdQOoh3KUg= # Ваш приватный ключ
+      WIREGUARD_ADDRESS: 10.0.0.2/32 # Внутренний адрес интерфейса
+      WIREGUARD_ENDPOINT: 77.239.101.213:49840 # IP и порт сервера WireGuard
+      WIREGUARD_PUBLIC_KEY: sISQcvzavcvGCGcP3O9DM1HIFV7/AcHBE3hR9+ZBIgo= # Публичный ключ пира
+      WIREGUARD_DNS: 1.1.1.1,1.0.0.1 # DNS-серверы
+      FIREWALL_OUTBOUND_SUBNETS: 0.0.0.0/0,::/0 # Разрешенные маршруты
+      TZ: Europe/Moscow
+      PUID: 1027
+      PGID: 100
+    security_opt:
+      - label:disable
+    stdin_open: true
+    tty: true
+    ports:
+      - 8191:8191
+      - 9117:9117 # Порт для приложений, работающих через VPN (если нужен)
+    volumes:
+      - /volume1/docker/openvpn/vpn:/gluetun/wireguard.conf # Путь для конфигурации или логов
 
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
-    networks:
-      - mynetwork
+    network_mode: service:antizapret-vpn
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
       - PGID=100
-    ports:
-      - 9117:9117
     volumes:
       - /mnt/hdd/torrents/jackett/config:/config
       - /mnt/hdd/torrents/jackett/downloads:/downloads
@@ -100,7 +120,7 @@ services:
       - sonarr
       - radarr
     volumes:
-      - /mnt/hdd/torrents/gramarrru/config.json:/config
+      - /mnt/hdd/torrents/gramarrru/config:/config
     restart: unless-stopped
 
   jellyfin:
