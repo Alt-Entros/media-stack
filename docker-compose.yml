@@ -11,6 +11,14 @@ services:
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
     environment:
+      VPN_SERVICE_PROVIDER: custom
+      VPN_TYPE: wireguard
+      WIREGUARD_PRIVATE_KEY: 6Gga9BOfuXHvWo9QpHOfPnJJ2xCR16XmrGdQOoh3KUg=
+      WIREGUARD_ADDRESSES: 10.0.0.2/32
+      WIREGUARD_ENDPOINT: 77.239.101.213:49840
+      WIREGUARD_PUBLIC_KEY: sISQcvzavcvGCGcP3O9DM1HIFV7/AcHBE3hR9+ZBIgo=
+      WIREGUARD_DNS: 1.1.1.1,1.0.0.1
+      TZ: Europe/Moscow
       PUID: 1027
       PGID: 100
     security_opt:
