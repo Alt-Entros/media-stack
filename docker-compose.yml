@@ -4,7 +4,6 @@ services:
     container_name: vpn-client
     networks:
       - vpn-network
-      - mynetwork
     environment:
       - TZ=Europe/Moscow
     volumes:
