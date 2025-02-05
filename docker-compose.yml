@@ -1,24 +1,24 @@
 services:
-  vpn-client:
-    image: teddysun/xray
-    container_name: vpn-client
-    environment:
-      - TZ=Europe/Moscow
-    volumes:
-      - /mnt/hdd/torrents/xray:/etc/xray
-    command: ["xray", "-config=/etc/xray/config.json"]
-    restart: unless-stopped
+  # vpn-client:
+  #   image: teddysun/xray
+  #   container_name: vpn-client
+  #   environment:
+  #     - TZ=Europe/Moscow
+  #   volumes:
+  #     - /mnt/hdd/torrents/xray:/etc/xray
+  #   command: ["xray", "-config=/etc/xray/config.json"]
+  #   restart: unless-stopped
 
   jackett:
     image: linuxserver/jackett:latest
     container_name: jackett
-    cap_add:
-      - NET_ADMIN
-    network_mode: "container:vpn-client"
+    networks:
+      - mynetwork
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
       - PGID=100
+    ports: -9117:9117
     volumes:
       - /mnt/hdd/torrents/jackett/config:/config
       - /mnt/hdd/torrents/jackett/downloads:/downloads
