@@ -1,5 +1,5 @@
 services:
-  gluetun:
+  antizapret-vpn:
     container_name: antizapret-vpn
     image: qmcgaw/gluetun
     network_mode: bridge
