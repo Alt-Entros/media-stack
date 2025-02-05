@@ -101,21 +101,6 @@ services:
       - 8191:8191
     restart: unless-stopped
 
-  gramarrru:
-    image: memodota/gramarrru
-    container_name: gramarrru
-    networks:
-      - mynetwork
-    environment:
-      - PUID=1027
-      - PGID=100
-    depends_on:
-      - sonarr
-      - radarr
-    volumes:
-      - /mnt/hdd/torrents/gramarrru/config.json:/config/config.json
-    restart: unless-stopped
-
   jellyfin:
     image: linuxserver/jellyfin:latest
     container_name: jellyfin
