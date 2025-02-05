@@ -18,7 +18,6 @@ services:
       - NET_ADMIN
     networks:
       - vpn-network
-      - mynetwork
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
