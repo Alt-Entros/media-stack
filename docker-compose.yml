@@ -66,7 +66,7 @@ services:
     volumes:
       - /mnt/hdd/torrents/sonarr/config:/config
       - /mnt/hdd/torrents/media/Shows:/Shows
-      - /mnt/hdd/torrents/downloads/Shows:/downloads
+      - /mnt/hdd/torrents/downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -83,7 +83,7 @@ services:
     volumes:
       - /mnt/hdd/torrents/radarr/config:/config
       - /mnt/hdd/torrents/media/Movies:/Movies
-      - /mnt/hdd/torrents/downloads/Movies:/downloads
+      - /mnt/hdd/torrents/downloads:/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
