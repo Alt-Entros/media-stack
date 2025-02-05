@@ -23,7 +23,7 @@ services:
     ports:
       - 9117:9117 # Порт для приложений, работающих через VPN (если нужен)
     volumes:
-      - /mnt/hdd/torrents/gluetun/wireguard.conf:/gluetun/wireguard.conf # Путь для конфигурации или логов
+      - /mnt/hdd/torrents/gluetun/wireguard/wg0.conf:/gluetun/wireguard/wg0.conf # Путь для конфигурации или логов
 
   jackett:
     image: linuxserver/jackett:latest
