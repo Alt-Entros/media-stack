@@ -21,6 +21,7 @@ services:
     stdin_open: true
     tty: true
     ports:
+      - 8191:8191
       - 9117:9117
     volumes:
       - /mnt/hdd/torrents/gluetun/wireguard/wg0.conf:/gluetun/wireguard/wg0.conf # Путь для конфигурации или логов
@@ -100,8 +101,6 @@ services:
       - TZ=Europe/Moscow
       - PUID=1027
       - PGID=100
-    ports:
-      - 8191:8191
     restart: unless-stopped
 
   jellyfin:
