@@ -21,7 +21,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - 9117:9117 # Порт для приложений, работающих через VPN (если нужен)
+      - 9117:9117
     volumes:
       - /mnt/hdd/torrents/gluetun/wireguard/wg0.conf:/gluetun/wireguard/wg0.conf # Путь для конфигурации или логов
 
@@ -29,6 +29,8 @@ services:
     image: linuxserver/jackett:latest
     container_name: jackett
     network_mode: service:antizapret-vpn
+    depends_on:
+      - antizapret-vpn
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -49,8 +51,10 @@ services:
       - PGID=100
     volumes:
       - /mnt/hdd/torrents/qbittorrent/config:/config
-      - /mnt/hdd/torrents/downloads:/downloads
+      - /mnt/hdd/torrents/media:/media
     ports:
+      - 6881:6881
+      - 6881:6881/udp
       - 8068:8068
     restart: unless-stopped
 
@@ -60,13 +64,12 @@ services:
     networks:
       - mynetwork
     environment:
-      - TZ=Europe/Moscow
       - PUID=1027
       - PGID=100
     volumes:
       - /mnt/hdd/torrents/sonarr/config:/config
-      - /mnt/hdd/torrents/media/Shows:/Shows
-      - /mnt/hdd/torrents/downloads:/downloads
+      - /mnt/hdd/torrents/sonarr/downloads:/downloads
+      - /mnt/hdd/torrents/media:/meida
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -77,13 +80,12 @@ services:
     networks:
       - mynetwork
     environment:
-      - TZ=Europe/Moscow
       - PUID=1027
       - PGID=100
     volumes:
       - /mnt/hdd/torrents/radarr/config:/config
-      - /mnt/hdd/torrents/media/Movies:/Movies
-      - /mnt/hdd/torrents/downloads:/downloads
+      - /mnt/hdd/torrents/radarr/downloads:/downloads
+      - /mnt/hdd/torrents/media:/media
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -91,8 +93,9 @@ services:
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
     container_name: flaresolverr
-    networks:
-      - mynetwork
+    network_mode: service:antizapret-vpn
+    depends_on:
+      - antizapret-vpn
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -112,7 +115,7 @@ services:
       - PGID=100
     volumes:
       - /mnt/hdd/torrents/jellyfin/config:/config
-      - /mnt/hdd/torrents/media:/data
+      - /mnt/hdd/torrents/media:/media
     ports:
       - 8096:8096
     restart: unless-stopped
