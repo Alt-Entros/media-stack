@@ -21,10 +21,15 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - 8989:8989
-      - 7878:7878
-      - 8191:8191
-      - 9117:9117
+      - 8096:8096 #jellyfin
+      - 5055:5055 #jellyseerr
+      - 6881:6881 #qbittorrent
+      - 6881:6881/udp
+      - 8068:8068
+      - 8989:8989 #sonarr
+      - 7878:7878 #radarr
+      - 8191:8191 #flasesolver
+      - 9117:9117 #jackett
     volumes:
       - /mnt/hdd/torrents/gluetun/wireguard/wg0.conf:/gluetun/wireguard/wg0.conf # Путь для конфигурации или логов
 
@@ -46,6 +51,7 @@ services:
   qbittorrent:
     image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
+    network_mode: service:antizapret-vpn
     environment:
       - WEBUI_PORT=8068
       - PUID=1027
@@ -53,10 +59,6 @@ services:
     volumes:
       - /mnt/hdd/torrents/qbittorrent/config:/config
       - /mnt/hdd/torrents/media:/media
-    ports:
-      - 6881:6881
-      - 6881:6881/udp
-      - 8068:8068
     restart: unless-stopped
 
   sonarr:
@@ -100,6 +102,7 @@ services:
   jellyfin:
     image: linuxserver/jellyfin:latest
     container_name: jellyfin
+    network_mode: service:antizapret-vpn
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
@@ -107,19 +110,16 @@ services:
     volumes:
       - /mnt/hdd/torrents/jellyfin/config:/config
       - /mnt/hdd/torrents/media:/media
-    ports:
-      - 8096:8096
     restart: unless-stopped
 
   jellyseerr:
     image: fallenbagel/jellyseerr:2.2.3
     container_name: jellyseerr
+    network_mode: service:antizapret-vpn
     environment:
       - TZ=Europe/Moscow
       - PUID=1027
       - PGID=100
     volumes:
       - /mnt/hdd/torrents/jellyseerr/config:/app/config
-    ports:
-      - 5055:5055
     restart: unless-stopped
